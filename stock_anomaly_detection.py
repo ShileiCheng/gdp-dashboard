@@ -18,45 +18,46 @@ stock_df = pd.read_csv(DATA_FILENAME)
 
 # Convert the Date column to datetime format
 stock_df['Date'] = pd.to_datetime(stock_df['Date'], errors='coerce')
-
 # Drop rows where the Date conversion failed (NaT values)
 stock_df = stock_df.dropna(subset=['Date'])
-
 # Sort data by date
 stock_df = stock_df.sort_values('Date')
 
-# Data preview
-st.write("Data Preview:")
-st.dataframe(stock_df.head())
+# Set up the date range pickers
+min_date = stock_df['Date'].min()
+max_date = stock_df['Date'].max()
 
-# Set up the date range slider
-min_date = stock_df['Date'].min().year
-max_date = stock_df['Date'].max().year
+# DATE BOX
+start_date = st.date_input("Start Date", min_date)
+end_date = st.date_input("End Date", max_date)
 
-start_year, end_year = st.slider(
-    "Select the range of years you are interested in:",
-    min_value=min_date,
-    max_value=max_date,
-    value=(min_date, max_date)
-)
-
-# Filter data based on the selected date range
-filtered_df = stock_df[(stock_df['Date'].dt.year >= start_year) & (stock_df['Date'].dt.year <= end_year)]
-
-# Check if filtered data has "Adj Close" and "Ticker" columns for plotting
-if 'Adj Close' in filtered_df.columns and 'Ticker' in filtered_df.columns:
-    # Use Altair to plot the trend chart based on the filtered data
-    line_chart = alt.Chart(filtered_df).mark_line().encode(
-        x=alt.X('Date:T', title='Date'),
-        y=alt.Y('Adj Close:Q', title='Adjusted Close Price'),
-        color='Ticker:N'  # Different colors for each stock ticker
-    ).properties(
-        width=800,
-        height=400,
-        title=f"Stock Price Trends by Ticker ({start_year} - {end_year})"
-    )
-
-    # Display the trend chart
-    st.altair_chart(line_chart, use_container_width=True)
+# Ensure start_date is before end_date
+if start_date > end_date:
+    st.error("Error: Start Date must be before End Date.")
 else:
-    st.error("The file does not contain 'Adj Close' and 'Ticker' columns.")
+    # Dropdown for selecting stock ticker
+    ticker_list = stock_df['Ticker'].unique()
+    selected_ticker = st.selectbox("Select Stock Ticker", ticker_list)
+
+    # Go button to display the chart
+    if st.button("Go"):
+        # Filter data based on the selected date range and ticker
+        filtered_df = stock_df[(stock_df['Date'] >= pd.to_datetime(start_date)) &
+                               (stock_df['Date'] <= pd.to_datetime(end_date)) &
+                               (stock_df['Ticker'] == selected_ticker)]
+
+        # Check if filtered data has "Adj Close" column for plotting
+        if not filtered_df.empty:
+            # Use Altair to plot the trend chart based on the filtered data
+            line_chart = alt.Chart(filtered_df).mark_line().encode(
+                x=alt.X('Date:T', title='Date'),
+                y=alt.Y('Adj Close:Q', title='Adjusted Close Price')
+            ).properties(
+                width=800,
+                height=400,
+                title=f"Stock Price Trend for {selected_ticker} ({start_date} - {end_date})"
+            )
+            # Display the trend chart
+            st.altair_chart(line_chart, use_container_width=True)
+        else:
+            st.error("No data available for the selected date range and ticker.")
