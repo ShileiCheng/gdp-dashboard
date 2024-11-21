@@ -48,17 +48,19 @@ end_date = st.date_input("End Date", max_date)
 ticker_list = stock_df['Ticker'].unique()
 selected_ticker = st.selectbox("Select Stock Ticker", ticker_list)
 
-# Model selection dropdown to filter anomalies
-selected_model = st.selectbox("Select Model", ["baseline", "svm", "dbscan", "isolation tree"])
+# Model selection dropdowns for anomaly comparison
+model_options = ["baseline", "svm", "dbscan_pca", "dbscan_nonpca", "isolation tree"]
+model_1 = st.selectbox("Select First Model", model_options)
+model_2 = st.selectbox("Select Second Model", model_options)
 
 # Ensure start_date is before end_date
 if start_date > end_date:
     st.error("Error: Start Date must be before End Date.")
 else:
     # Create tabs
-    tab1, tab2, tab3 = st.tabs(["Stock Price", "Anomaly Detection", "Model Explanation"])
+    tab1, tab2, tab3 = st.tabs(["Stock Prices", "Anomaly Comparison", "Model Explanation"])
 
-    # Tab 1: Stock Price Visualization
+    # Tab 1: Stock Prices
     with tab1:
         st.header("Stock Price Visualization")
 
@@ -81,73 +83,93 @@ else:
         else:
             st.error("No data available for the selected date range and ticker.")
 
-    # Tab 2: Anomaly Detection
+    # Tab 2: Anomaly Comparison
     with tab2:
-        st.header("Anomaly Detection")
+        st.header("Anomaly Comparison")
 
         # Filter stock data based on date range and ticker
         filtered_stock_df = stock_df[(stock_df['Date'] >= pd.to_datetime(start_date)) &
                                      (stock_df['Date'] <= pd.to_datetime(end_date)) &
                                      (stock_df['Ticker'] == selected_ticker)]
 
-        # Filter anomaly data based on date range, ticker, and selected model
-        filtered_anomaly_df = full_data_df[(full_data_df['Date'] >= pd.to_datetime(start_date)) &
-                                           (full_data_df['Date'] <= pd.to_datetime(end_date)) &
-                                           (full_data_df['Ticker'] == selected_ticker) &
-                                           (full_data_df[selected_model] == 1)]  # Only anomalies for selected model
+        # Filter anomaly data for both models
+        model_1_anomalies = full_data_df[(full_data_df['Date'] >= pd.to_datetime(start_date)) &
+                                         (full_data_df['Date'] <= pd.to_datetime(end_date)) &
+                                         (full_data_df['Ticker'] == selected_ticker) &
+                                         (full_data_df[model_1] == 1)]
 
-        # Merge anomaly data with stock price data to get 'Adj Close' for anomaly points
-        merged_anomaly_df = pd.merge(filtered_anomaly_df, filtered_stock_df[['Date', 'Ticker', 'Adj Close']],
-                                     on=['Date', 'Ticker'], how='inner')
+        model_2_anomalies = full_data_df[(full_data_df['Date'] >= pd.to_datetime(start_date)) &
+                                         (full_data_df['Date'] <= pd.to_datetime(end_date)) &
+                                         (full_data_df['Ticker'] == selected_ticker) &
+                                         (full_data_df[model_2] == 1)]
 
+        # Find overlapping anomalies
+        overlapping_anomalies = pd.merge(model_1_anomalies, model_2_anomalies, on=['Date', 'Ticker'])
+
+        # Merge anomalies with stock price data
+        model_1_merged = pd.merge(model_1_anomalies, filtered_stock_df[['Date', 'Ticker', 'Adj Close']],
+                                  on=['Date', 'Ticker'], how='inner')
+
+        model_2_merged = pd.merge(model_2_anomalies, filtered_stock_df[['Date', 'Ticker', 'Adj Close']],
+                                  on=['Date', 'Ticker'], how='inner')
+
+        overlapping_merged = pd.merge(overlapping_anomalies, filtered_stock_df[['Date', 'Ticker', 'Adj Close']],
+                                      on=['Date', 'Ticker'], how='inner')
+
+        # Visualize
         if not filtered_stock_df.empty:
-            # Plot stock price trend
+            # Base line chart for stock prices
             line_chart = alt.Chart(filtered_stock_df).mark_line().encode(
                 x=alt.X('Date:T', title='Date'),
                 y=alt.Y('Adj Close:Q', title='Adjusted Close Price')
             )
 
-            # Mark anomaly points if any
-            if not merged_anomaly_df.empty:
-                anomaly_points = alt.Chart(merged_anomaly_df).mark_circle(size=60, color='red').encode(
-                    x='Date:T',
-                    y='Adj Close:Q',
-                    tooltip=['Date', 'Adj Close']
-                )
-                # Combine line chart and anomaly points
-                combined_chart = (line_chart + anomaly_points).properties(
-                    width=700,
-                    height=400,
-                    title=f"Stock Price with {selected_model.capitalize()} Anomalies for {selected_ticker} ({start_date} - {end_date})"
-                )
-            else:
-                # If no anomalies, show only the line chart
-                combined_chart = line_chart.properties(
-                    width=700,
-                    height=400,
-                    title=f"Stock Price Trend for {selected_ticker} ({start_date} - {end_date})"
-                )
+            # Anomalies for Model 1
+            model_1_points = alt.Chart(model_1_merged).mark_circle(size=60, color='blue').encode(
+                x='Date:T',
+                y='Adj Close:Q',
+                tooltip=['Date', 'Adj Close']
+            )
 
+            # Anomalies for Model 2
+            model_2_points = alt.Chart(model_2_merged).mark_circle(size=60, color='red').encode(
+                x='Date:T',
+                y='Adj Close:Q',
+                tooltip=['Date', 'Adj Close']
+            )
+
+            # Overlapping anomalies
+            overlap_points = alt.Chart(overlapping_merged).mark_circle(size=80, color='purple').encode(
+                x='Date:T',
+                y='Adj Close:Q',
+                tooltip=['Date', 'Adj Close']
+            )
+
+            # Combine charts
+            combined_chart = (line_chart + model_1_points + model_2_points + overlap_points).properties(
+                width=700,
+                height=400,
+                title=f"Anomaly Comparison: {model_1.capitalize()} (Blue), {model_2.capitalize()} (Red), Overlap (Purple)"
+            )
+
+            # Display chart
             st.altair_chart(combined_chart, use_container_width=True)
+
+            # Legend
+            st.write("### Legend")
+            st.markdown("""
+            - **Blue**: Anomalies detected by the first model.
+            - **Red**: Anomalies detected by the second model.
+            - **Purple**: Overlapping anomalies detected by both models.
+            """)
         else:
             st.error("No data available for the selected date range and ticker.")
 
     # Tab 3: Model Explanation
     with tab3:
         st.header("Model Explanation")
-        st.write("In this section, you can explain the model used for analysis.")
+        st.subheader(f"Explanation for {model_1.capitalize()}")
+        st.write(f"{model_1.capitalize()} model details go here...")
 
-        st.subheader("Model Overview")
-        st.write(f"""
-        {selected_model.capitalize()} model is used to detect stock price anomalies by analyzing trends and unusual patterns.
-        """)
-        st.subheader("Key Features Used")
-        st.write("""
-        - Rolling mean and standard deviation of returns
-        - Price momentum calculated from adjusted close prices
-        - Volatility and volume trends
-        """)
-        st.subheader("Future Improvements")
-        st.write("""
-        Future enhancements could include additional feature engineering, more anomaly detection algorithms, and integrating real-time data.
-        """)
+        st.subheader(f"Explanation for {model_2.capitalize()}")
+        st.write(f"{model_2.capitalize()} model details go here...")
