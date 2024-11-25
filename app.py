@@ -168,8 +168,37 @@ else:
     # Tab 3: Model Explanation
     with tab3:
         st.header("Model Explanation")
-        st.subheader(f"Explanation for {model_1.capitalize()}")
-        st.write(f"{model_1.capitalize()} model details go here...")
 
+        # Explanation for first model
+        st.subheader(f"Explanation for {model_1.capitalize()}")
+        if model_1 == "baseline":
+            st.write("""
+            ### Random Forest Model  
+            - **Focus**: Detects anomalies in price volatility and returns.  
+            - **Features**: Utilizes key indicators such as price trends, trading volume, and statistical metrics (e.g., rolling mean, skewness, kurtosis).  
+            - **Optimization**: Applies feature importance analysis to enhance model accuracy and streamline predictions.  
+
+            ### LightGBM Model  
+            - **Focus**: Targets anomalies in trading volume changes.  
+            - **Features**: Captures short-term patterns in price and volume, including percentage changes and price-volume ratios.  
+            - **Optimization**: Employs advanced preprocessing (e.g., outlier removal, standardization) and hyperparameter tuning for peak performance.
+            """)
+        else:
+            st.write(f"{model_1.capitalize()} model details go here...")
+
+        # Explanation for second model
         st.subheader(f"Explanation for {model_2.capitalize()}")
-        st.write(f"{model_2.capitalize()} model details go here...")
+        if model_2 == "baseline":
+            st.write("""
+            ### Random Forest Model  
+            - **Focus**: Detects anomalies in price volatility and returns.  
+            - **Features**: Utilizes key indicators such as price trends, trading volume, and statistical metrics (e.g., rolling mean, skewness, kurtosis).  
+            - **Optimization**: Applies feature importance analysis to enhance model accuracy and streamline predictions.  
+
+            ### LightGBM Model  
+            - **Focus**: Targets anomalies in trading volume changes.  
+            - **Features**: Captures short-term patterns in price and volume, including percentage changes and price-volume ratios.  
+            - **Optimization**: Employs advanced preprocessing (e.g., outlier removal, standardization) and hyperparameter tuning for peak performance.
+            """)
+        else:
+            st.write(f"{model_2.capitalize()} model details go here...")
