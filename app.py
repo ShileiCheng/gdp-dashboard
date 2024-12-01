@@ -183,22 +183,54 @@ else:
             - **Features**: Captures short-term patterns in price and volume, including percentage changes and price-volume ratios.  
             - **Optimization**: Employs advanced preprocessing (e.g., outlier removal, standardization) and hyperparameter tuning for peak performance.
             """)
+
+        elif model_1 == "svm":
+            st.write("""
+            ### One-Sample SVM Model  
+            - **Focus**: Anomaly detection using a hyperplane to separate normal points from anomalies in a feature space.  
+            - **Features**: The model uses a one-class support vector machine, which tries to separate the majority of the data points from the origin, classifying them as normal or anomalous.  
+            - **Optimization**: Effective for detecting anomalies in datasets with clear boundaries between normal and anomalous data points. The SVM uses a kernel trick for non-linear separability.
+            """)
+        
+        elif model_1 == "isolation tree":
+            st.write("""
+            ### Isolation Forest Model  
+            - **Focus**: Detects anomalies by isolating observations that are different from the rest of the data.  
+            - **Features**: Uses a tree-based method to isolate anomalies. The key idea is that anomalies are few and different, thus requiring fewer splits to isolate compared to normal data points.  
+            - **Optimization**: Works well in high-dimensional spaces and with large datasets. The model is efficient for detecting outliers without heavy preprocessing.
+            """)
         else:
             st.write(f"{model_1.capitalize()} model details go here...")
 
-        # Explanation for second model
-        st.subheader(f"Explanation for {model_2.capitalize()}")
-        if model_2 == "baseline":
-            st.write("""
-            ### Random Forest Model  
-            - **Focus**: Detects anomalies in price volatility and returns.  
-            - **Features**: Utilizes key indicators such as price trends, trading volume, and statistical metrics (e.g., rolling mean, skewness, kurtosis).  
-            - **Optimization**: Applies feature importance analysis to enhance model accuracy and streamline predictions.  
+        if model_1 != model_2:
+            # Explanation for second model
+            st.subheader(f"Explanation for {model_2.capitalize()}")
+            if model_2 == "baseline":
+                st.write("""
+                ### Random Forest Model  
+                - **Focus**: Detects anomalies in price volatility and returns.  
+                - **Features**: Utilizes key indicators such as price trends, trading volume, and statistical metrics (e.g., rolling mean, skewness, kurtosis).  
+                - **Optimization**: Applies feature importance analysis to enhance model accuracy and streamline predictions.  
 
-            ### LightGBM Model  
-            - **Focus**: Targets anomalies in trading volume changes.  
-            - **Features**: Captures short-term patterns in price and volume, including percentage changes and price-volume ratios.  
-            - **Optimization**: Employs advanced preprocessing (e.g., outlier removal, standardization) and hyperparameter tuning for peak performance.
-            """)
-        else:
-            st.write(f"{model_2.capitalize()} model details go here...")
+                ### LightGBM Model  
+                - **Focus**: Targets anomalies in trading volume changes.  
+                - **Features**: Captures short-term patterns in price and volume, including percentage changes and price-volume ratios.  
+                - **Optimization**: Employs advanced preprocessing (e.g., outlier removal, standardization) and hyperparameter tuning for peak performance.
+                """)
+            elif model_2 == "svm":
+                st.write("""
+                ### One-Sample SVM Model  
+                - **Focus**: Anomaly detection using a hyperplane to separate normal points from anomalies in a feature space.  
+                - **Features**: The model uses a one-class support vector machine, which tries to separate the majority of the data points from the origin, classifying them as normal or anomalous.  
+                - **Optimization**: Effective for detecting anomalies in datasets with clear boundaries between normal and anomalous data points. The SVM uses a kernel trick for non-linear separability.
+                """)
+
+            elif model_2 == "isolaton tree":
+                st.write("""
+                ### Isolation Forest Model  
+                - **Focus**: Detects anomalies by isolating observations that are different from the rest of the data.  
+                - **Features**: Uses a tree-based method to isolate anomalies. The key idea is that anomalies are few and different, thus requiring fewer splits to isolate compared to normal data points.  
+                - **Optimization**: Works well in high-dimensional spaces and with large datasets. The model is efficient for detecting outliers without heavy preprocessing.
+                """)
+            else:
+                st.write(f"{model_2.capitalize()} model details go here...")
