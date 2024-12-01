@@ -199,6 +199,20 @@ else:
             - **Features**: Uses a tree-based method to isolate anomalies. The key idea is that anomalies are few and different, thus requiring fewer splits to isolate compared to normal data points.  
             - **Optimization**: Works well in high-dimensional spaces and with large datasets. The model is efficient for detecting outliers without heavy preprocessing.
             """)
+
+        elif model_1 == "dbscan-nonpca":
+            st.write("""
+            ### DBSCAN Model (Without PCA)
+            - **Focus**: Detects anomalies in datasets by identifying clusters of varying densities and isolating data points that do not belong to any cluster.  
+            - **Features**: 
+              - Works directly on the raw dataset (without dimensionality reduction) to preserve all original feature information. 
+              - Analyzes the local density of data points using the parameters `eps` (maximum distance for a point to be considered part of a cluster) and `min_samples` (minimum points required to form a cluster).  
+            - **Optimization**: 
+              - Effective for identifying non-linear patterns in datasets with irregular shapes.   
+              - Handles noise robustly by classifying low-density points as outliers.  
+            - **Use Case**: Best suited for high-dimensional data where the relationship between features is non-linear, and dimensionality reduction methods like PCA might lose valuable signal.
+            """)
+            
         else:
             st.write(f"{model_1.capitalize()} model details go here...")
 
@@ -231,6 +245,19 @@ else:
                 - **Focus**: Detects anomalies by isolating observations that are different from the rest of the data.  
                 - **Features**: Uses a tree-based method to isolate anomalies. The key idea is that anomalies are few and different, thus requiring fewer splits to isolate compared to normal data points.  
                 - **Optimization**: Works well in high-dimensional spaces and with large datasets. The model is efficient for detecting outliers without heavy preprocessing.
+                """)
+
+            elif model_2 == "dbscan-nonpca":
+                st.write("""
+                ### DBSCAN Model (Without PCA)
+                - **Focus**: Detects anomalies in datasets by identifying clusters of varying densities and isolating data points that do not belong to any cluster.  
+                - **Features**: 
+                  - Works directly on the raw dataset (without dimensionality reduction) to preserve all original feature information. 
+                  - Analyzes the local density of data points using the parameters `eps` (maximum distance for a point to be considered part of a cluster) and `min_samples` (minimum points required to form a cluster).  
+                - **Optimization**: 
+                  - Effective for identifying non-linear patterns in datasets with irregular shapes.   
+                  - Handles noise robustly by classifying low-density points as outliers.  
+                - **Use Case**: Best suited for high-dimensional data where the relationship between features is non-linear, and dimensionality reduction methods like PCA might lose valuable signal.
                 """)
             else:
                 st.write(f"{model_2.capitalize()} model details go here...")
