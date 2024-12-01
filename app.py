@@ -200,7 +200,7 @@ else:
             - **Optimization**: Works well in high-dimensional spaces and with large datasets. The model is efficient for detecting outliers without heavy preprocessing.
             """)
 
-        elif model_1 == "dbscan-nonpca":
+        elif model_1 == "dbscan_nonpca":
             st.write("""
             ### DBSCAN Model (Without PCA)
             - **Focus**: Detects anomalies in datasets by identifying clusters of varying densities and isolating data points that do not belong to any cluster.  
@@ -211,6 +211,19 @@ else:
               - Effective for identifying non-linear patterns in datasets with irregular shapes.   
               - Handles noise robustly by classifying low-density points as outliers.  
             - **Use Case**: Best suited for high-dimensional data where the relationship between features is non-linear, and dimensionality reduction methods like PCA might lose valuable signal.
+            """)
+
+        elif model_1 == "dbscan_pca":
+            st.write("""
+            ### DBSCAN Model (With PCA)
+            - **Focus**: Improves anomaly detection in high-dimensional datasets by first reducing dimensions using PCA, then applying DBSCAN to the transformed data.
+            - **Features**: 
+              - Incorporates PCA to reduce the dataset to principal components that capture most variance, simplifying the clustering process.
+              - Maintains the DBSCAN's core functionality of using `eps` and `min_samples` to explore data density, but on a simplified data representation.
+            - **Optimization**: 
+              - Enhances clustering performance by reducing computational complexity and noise, allowing DBSCAN to focus on the most informative features.   
+              - Facilitates more accurate identification of clusters and outliers in reduced-dimensional space, which may be obscured in full-dimensional data.
+            - **Use Case**: Particularly effective for datasets where initial high-dimensionality might obscure meaningful cluster formations, making it suitable for complex datasets with significant feature interactions.
             """)
             
         else:
@@ -247,7 +260,7 @@ else:
                 - **Optimization**: Works well in high-dimensional spaces and with large datasets. The model is efficient for detecting outliers without heavy preprocessing.
                 """)
 
-            elif model_2 == "dbscan-nonpca":
+            elif model_2 == "dbscan_nonpca":
                 st.write("""
                 ### DBSCAN Model (Without PCA)
                 - **Focus**: Detects anomalies in datasets by identifying clusters of varying densities and isolating data points that do not belong to any cluster.  
@@ -259,5 +272,19 @@ else:
                   - Handles noise robustly by classifying low-density points as outliers.  
                 - **Use Case**: Best suited for high-dimensional data where the relationship between features is non-linear, and dimensionality reduction methods like PCA might lose valuable signal.
                 """)
+
+            elif model_2 == "dbscan_pca":
+                st.write("""
+                ### DBSCAN Model (With PCA)
+                - **Focus**: Improves anomaly detection in high-dimensional datasets by first reducing dimensions using PCA, then applying DBSCAN to the transformed data.
+                - **Features**: 
+                  - Incorporates PCA to reduce the dataset to principal components that capture most variance, simplifying the clustering process.
+                  - Maintains the DBSCAN's core functionality of using `eps` and `min_samples` to explore data density, but on a simplified data representation.
+                - **Optimization**: 
+                  - Enhances clustering performance by reducing computational complexity and noise, allowing DBSCAN to focus on the most informative features.   
+                  - Facilitates more accurate identification of clusters and outliers in reduced-dimensional space, which may be obscured in full-dimensional data.
+                - **Use Case**: Particularly effective for datasets where initial high-dimensionality might obscure meaningful cluster formations, making it suitable for complex datasets with significant feature interactions.
+                """)   
+            
             else:
                 st.write(f"{model_2.capitalize()} model details go here...")
