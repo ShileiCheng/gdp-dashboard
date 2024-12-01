@@ -192,7 +192,7 @@ else:
             - **Optimization**: Effective for detecting anomalies in datasets with clear boundaries between normal and anomalous data points. The SVM uses a kernel trick for non-linear separability.
             """)
         
-        elif model_1 == "Isolation tree":
+        elif model_1 == "isolation tree":
             st.write("""
             ### Isolation Forest Model  
             - **Focus**: Detects anomalies by isolating observations that are different from the rest of the data.  
@@ -225,7 +225,7 @@ else:
                 - **Optimization**: Effective for detecting anomalies in datasets with clear boundaries between normal and anomalous data points. The SVM uses a kernel trick for non-linear separability.
                 """)
 
-            elif model_2 == "Isolation tree":
+            elif model_2 == "isolation tree":
                 st.write("""
                 ### Isolation Forest Model  
                 - **Focus**: Detects anomalies by isolating observations that are different from the rest of the data.  
