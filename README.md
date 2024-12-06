@@ -14,7 +14,7 @@
    ```
 
 3. Understand the File Structure
-4. 
+
 app.py: The main entry point for your Streamlit app. This file likely includes the UI components and logic to interact with your models and results.
 
 DATA Folder: Contains all the results from your models. Ensure this folder is present and populated with relevant data for the app to display meaningful results.
