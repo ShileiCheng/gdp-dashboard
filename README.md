@@ -1,5 +1,5 @@
 
-### How to run it on our UserInterface
+### How to run our UserInterface
 
 1. Install the requirements
 
